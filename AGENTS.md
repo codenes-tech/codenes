@@ -8,3 +8,9 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Public copy lives in `src/content/pt.ts` typed by `src/content/types.ts`; why: keeps a second language addable without touching components.
+- Pure business logic (brand guard, WhatsApp lead message) lives in `src/domain/` with tests in `src/test/`; why: testable without React.
+- Contact form never stores data; it only opens wa.me with the validated fields; why: no backend needed.
+- Theme: light default, `.dark` class persisted in localStorage via inline script in root; why: avoid flash.
