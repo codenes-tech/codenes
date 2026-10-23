@@ -23,7 +23,7 @@ function Home() {
       <section className="relative overflow-hidden">
         <div className="container-site pb-16 pt-14 md:pb-24 md:pt-20">
           <p className="eyebrow">{c.hero.eyebrow}</p>
-          <p aria-hidden className="mt-6 select-none font-display text-[18vw] font-extrabold leading-[0.85] tracking-tighter text-foreground md:text-[11rem]">
+          <p aria-hidden className="mt-6 select-none font-display text-[15vw] font-extrabold leading-[0.85] tracking-tighter text-foreground lg:text-[9.5rem]">
             Codenes<span className="text-primary">.</span>
           </p>
           <div className="mt-10 grid gap-10 md:grid-cols-[1.3fr_1fr] md:items-end">
