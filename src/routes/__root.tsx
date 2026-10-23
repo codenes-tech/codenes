@@ -12,6 +12,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Footer, Header, WhatsappFloat } from "@/components/site/layout";
+import { THEME_SCRIPT } from "@/components/site/theme";
+import { LINKEDIN_URL, SITE_URL } from "@/domain/brand";
 
 function NotFoundComponent() {
   return (
@@ -78,21 +81,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { title: "Codenes | Sites que vendem" },
+      { name: "description", content: "Sites, landing pages e cardápios digitais para pequenas e médias empresas." },
+      { name: "author", content: "Wesley Nunes Lima" },
+      { property: "og:site_name", content: "Codenes" },
+      { property: "og:locale", content: "pt_BR" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap",
       },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+    ],
+    scripts: [
+      { children: THEME_SCRIPT },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Codenes",
+          url: SITE_URL,
+          founder: { "@type": "Person", name: "Wesley Nunes Lima" },
+          sameAs: [LINKEDIN_URL],
+          contactPoint: { "@type": "ContactPoint", contactType: "sales", availableLanguage: "Portuguese" },
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -103,7 +121,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -120,8 +138,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer />
+        <WhatsappFloat />
+      </div>
     </QueryClientProvider>
   );
 }
