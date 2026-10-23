@@ -22,7 +22,7 @@ describe("whatsapp lead", () => {
     const lead = leadSchema.parse({ ...valid, extra: "secret" });
     const url = buildWhatsappUrl(lead);
     expect(url.startsWith("https://wa.me/5588999375708?text=")).toBe(true);
-    const text = decodeURIComponent(url.split("text=")[1]);
+    const text = decodeURIComponent(url.split("text=")[1] ?? "");
     expect(text).toContain("Ana");
     expect(text).toContain("Oficina");
     expect(text).not.toContain("secret");
