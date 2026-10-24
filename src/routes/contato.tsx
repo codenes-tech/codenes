@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/site/layout";
-import { SEGMENTS, SERVICE_OPTIONS, buildWhatsappUrl, leadSchema } from "@/domain/whatsapp";
+import { SEGMENTS, buildWhatsappUrl, leadSchema } from "@/domain/whatsapp";
+import { submitLead } from "@/lib/leads.functions";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/contato")({
@@ -15,12 +16,13 @@ export const Route = createFileRoute("/contato")({
   component: Contact,
 });
 
-type Errors = Partial<Record<"name" | "phone" | "segment" | "service" | "message", string>>;
+type Errors = Partial<Record<"name" | "phone" | "segment" | "instagram" | "message", string>>;
 
 function Contact() {
   const [errors, setErrors] = useState<Errors>({});
+  const [sending, setSending] = useState(false);
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
     const parsed = leadSchema.safeParse(data);
@@ -31,14 +33,21 @@ function Contact() {
       return;
     }
     setErrors({});
+    setSending(true);
+    try {
+      await submitLead({ data: parsed.data });
+    } catch {
+      // Não perde o lead: mesmo se o salvamento falhar, o WhatsApp abre normalmente.
+    }
     window.open(buildWhatsappUrl(parsed.data), "_blank", "noopener");
+    setSending(false);
   };
 
   const err = (k: keyof Errors) => errors[k] && <p className="mt-1 text-sm text-destructive">{errors[k]}</p>;
 
   return (
     <>
-      <PageHeader eyebrow="Contato" title="Peça seu orçamento pelo WhatsApp">
+      <PageHeader eyebrow="Orçamento" title="Peça seu orçamento pelo WhatsApp">
         Responda 5 perguntas rápidas. Ao enviar, o WhatsApp abre com a mensagem pronta.
       </PageHeader>
       <section className="container-site py-16">
@@ -62,20 +71,22 @@ function Contact() {
             {err("segment")}
           </label>
           <label className="block">
-            <span className="mb-2 block font-semibold">Serviço desejado</span>
-            <select name="service" className="field" defaultValue="">
-              <option value="" disabled>Selecione</option>
-              {SERVICE_OPTIONS.map((s) => <option key={s}>{s}</option>)}
-            </select>
-            {err("service")}
+            <span className="mb-2 block font-semibold">Instagram da loja <span className="font-normal text-muted-foreground">(opcional)</span></span>
+            <input name="instagram" className="field" placeholder="@sualoja" maxLength={60} />
+            {err("instagram")}
           </label>
           <label className="block">
-            <span className="mb-2 block font-semibold">Mensagem <span className="font-normal text-muted-foreground">(opcional)</span></span>
-            <textarea name="message" className="field min-h-28" maxLength={500} />
+            <span className="mb-2 block font-semibold">O que você busca? Qual é o objetivo?</span>
+            <textarea
+              name="message"
+              className="field min-h-28"
+              maxLength={500}
+              placeholder="Conte o que você vende, o que precisa e onde quer chegar (landing page, cardápio, catálogo...)"
+            />
             {err("message")}
           </label>
-          <button type="submit" className="btn-primary mt-2">
-            <MessageCircle size={18} /> Enviar pelo WhatsApp
+          <button type="submit" className="btn-primary mt-2" disabled={sending}>
+            <MessageCircle size={18} /> {sending ? "Enviando..." : "Solicitar orçamento"}
           </button>
         </form>
       </section>

@@ -6,7 +6,7 @@ const valid = {
   name: "Ana",
   phone: "(88) 99999-0000",
   segment: "Oficina",
-  service: "Site",
+  instagram: "",
   message: "",
 } as const;
 
@@ -28,11 +28,21 @@ describe("whatsapp lead", () => {
     expect(text).not.toContain("secret");
   });
 
-  it("requires name, phone, segment and service", () => {
+  it("includes instagram and objective only when filled", () => {
+    const empty = decodeURIComponent(buildWhatsappUrl(leadSchema.parse(valid)).split("text=")[1] ?? "");
+    expect(empty).not.toContain("Instagram");
+    expect(empty).not.toContain("Objetivo");
+    const filled = decodeURIComponent(
+      buildWhatsappUrl(leadSchema.parse({ ...valid, instagram: "@lojadaana", message: "Quero um catálogo" })).split("text=")[1] ?? "",
+    );
+    expect(filled).toContain("@lojadaana");
+    expect(filled).toContain("Quero um catálogo");
+  });
+
+  it("requires name, phone and segment; instagram and message are optional", () => {
     expect(leadSchema.safeParse({ ...valid, name: "" }).success).toBe(false);
     expect(leadSchema.safeParse({ ...valid, phone: "123" }).success).toBe(false);
     expect(leadSchema.safeParse({ ...valid, segment: "x" }).success).toBe(false);
-    expect(leadSchema.safeParse({ ...valid, service: "x" }).success).toBe(false);
-    expect(leadSchema.safeParse({ ...valid, message: undefined }).success).toBe(true);
+    expect(leadSchema.safeParse({ ...valid, instagram: undefined, message: undefined }).success).toBe(true);
   });
 });
