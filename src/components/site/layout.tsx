@@ -8,7 +8,6 @@ const NAV = [
   { to: "/servicos", label: "Serviços" },
   { to: "/sobre", label: "Sobre" },
   { to: "/faq", label: "FAQ" },
-  { to: "/contato", label: "Contato" },
 ] as const;
 
 export function Header() {
@@ -21,7 +20,12 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" activeProps={{ className: "text-foreground" }}>
+            <Link
+              key={n.to}
+              to={n.to}
+              className="relative py-1 text-sm font-medium text-muted-foreground transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-primary after:transition-all hover:text-foreground"
+              activeProps={{ className: "text-foreground after:w-full" }}
+            >
               {n.label}
             </Link>
           ))}
