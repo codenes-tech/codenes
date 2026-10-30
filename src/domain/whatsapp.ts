@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { WHATSAPP_NUMBER } from "./brand";
+import { isValidPhone } from "./phone";
 
 export const SEGMENTS = [
   "Restaurante / lanchonete",
@@ -11,14 +12,20 @@ export const SEGMENTS = [
 ] as const;
 
 export const leadSchema = z.object({
-  name: z.string().trim().min(2, "Informe seu nome").max(80),
+  name: z.string().trim().min(2, "Informe seu nome").max(80, "Use no máximo 80 caracteres"),
   phone: z
     .string()
     .trim()
-    .refine((v) => v.replace(/\D/g, "").length >= 10 && v.replace(/\D/g, "").length <= 13, "Informe um telefone válido com DDD"),
+    .refine((v) => isValidPhone(v), "Informe um número com DDD, ex.: (88) 99999-0000"),
   segment: z.enum(SEGMENTS, { errorMap: () => ({ message: "Escolha o segmento" }) }),
-  instagram: z.string().trim().max(60).optional().default(""),
-  message: z.string().trim().max(500).optional().default(""),
+  instagram: z
+    .string()
+    .trim()
+    .max(30, "Use no máximo 30 caracteres")
+    .regex(/^@?[A-Za-z0-9._]*$/, "Use apenas letras, números, ponto e _ (o @ no início é opcional)")
+    .optional()
+    .default(""),
+  message: z.string().trim().max(500, "Use no máximo 500 caracteres").optional().default(""),
 });
 
 export type Lead = z.infer<typeof leadSchema>;
