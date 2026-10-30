@@ -4,7 +4,7 @@ import { pt } from "@/content/pt";
 import { FinalCta, PageHeader } from "@/components/site/layout";
 import { INSTAGRAM_URL, LINKEDIN_URL } from "@/domain/brand";
 import { pageMeta } from "@/lib/seo";
-import fotoNunes from "@/assets/foto-nunes.jpg.asset.json";
+import fotoNunes from "@/assets/foto-nunes.jpg";
 
 export const Route = createFileRoute("/sobre")({
   head: () =>
