@@ -24,7 +24,7 @@ function About() {
       <section className="container-site grid gap-12 py-16 md:grid-cols-[1fr_1.4fr]">
         <div className="relative overflow-hidden rounded-2xl">
           <img
-            src={fotoNunes.jpg}
+            src={fotoNunes}
             alt="Wesley Nunes Lima, fundador da Codenes"
             className="aspect-[4/5] w-full object-cover"
           />
